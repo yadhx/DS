@@ -1,167 +1,101 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-void insatbeg();
-void insatend();
-void insatpos();
-void display();
+void insert();
 void delete();
-                                    /* creating node structure*/ 
-typedef struct node{                /* typedef used to refer 'struct node' as 'node' */ 
-    int data;                                                               /* | */ 
-    struct node* next;                                                      /* | */ 
-}node;            /* <--------------------------------------------------------- */ 
+void update();
+void display();
 
-node* head = NULL;
-node *current;
+struct node {
+    int data;
+    struct node *next;
+}*new,*start=NULL,*temp,*prev;
 
-void main(){
-    int is_running=1, ch;
-    while(is_running){
-        printf("\n\n1.Insert at beginning\n2.Insert at end\n3.Insert at position\n4.Delete\n5.Display\n6.Exit\nEnter your choice: ");
-        scanf("%d", &ch);
-        switch(ch)
+int choice;
+int main(){
+    while(1){
+        printf("\nEnter a operation\n1.Insert\n2.Delete\n3.Update\n4.Display\n5.Exit\nChoose an Operation : ");
+        scanf("%d",&choice);
+        switch (choice)
         {
         case 1:
-            insatbeg();                             /* insert at begining*/ 
+            insert();
             break;
         case 2:
-            insatend();                            /* insert at end */ 
+            delete();
             break;
         case 3:
-            insatpos();                            /* insert to specified position */ 
+            update();
             break;
         case 4:
-            delete();                                /* deleting a node */ 
+            display();
             break;
         case 5:
-            display();                                 /* display all the nodes   */ 
-            break;
-        case 6:
-            is_running = 0;
-            break;
+            exit(0);
         default:
-            printf("\nWrong Choice :(\n");
+            printf("Invalid Choice !");
             break;
         }
     }
 }
 
-void insatbeg(){
-    node* newnode;
-    newnode = (node*)malloc(sizeof(node));
-    int data;
-    printf("\nEnter the data to be added: ");
-    scanf("%d", &data);
-    newnode->data = data;
-    newnode->next = NULL;
-    if(head==NULL){
-        head = newnode;
+void insert(){
+    new = (struct node *)malloc(sizeof(struct node));
+    printf("Enter Element to Insert : ");
+    scanf("%d",&new->data);
+    new->next=NULL;
+    
+    if(start == NULL){
+        start = new;
+        temp = new;
+    }else{
+        temp->next=new;
+        temp=new;
     }
-    else{
-        newnode->next = head;
-        head = newnode;
-    }
-}
-
-void insatend(){
-    node* newnode;
-    newnode = (node*)malloc(sizeof(node));
-    int data;
-    printf("\nEnter the data to be added: ");
-    scanf("%d", &data);
-    newnode->data = data;
-    newnode->next = NULL;
-    if(head==NULL){
-        head = newnode;
-    }
-    else{
-        current = head;
-        while(current->next != NULL){
-            current = current->next;
-        }
-        current->next = newnode;
-    }
-}
-
-void insatpos(){
-    node* newnode;
-    newnode = (node*)malloc(sizeof(node));
-    int data, pos;
-    printf("\nEnter the data to be added: ");
-    scanf("%d", &data);
-    newnode->data = data;
-    newnode->next = NULL;
-    printf("\nEnter the position to insert the data: ");
-    scanf("%d", &pos);
-    if(head==NULL){
-        head = newnode;
-    }
-    else if(pos == 1){                             /* if entering in position of head */ 
-        newnode->next = head;
-        head = newnode;
-    }
-    else{
-        current = head;
-        for(int i=2; i<pos; i++){                    /* i = 2 since current = head and next node is second position  */ 
-            if(current->next == NULL){                     /* i<pos => 2<2 so current still at head and next node is 2nd */ 
-                break;
-            }
-            current = current->next;
-        }
-        if(current->next == NULL){
-            current->next = newnode;
-        }
-        else{
-            newnode->next = current->next;
-            current->next = newnode;
-        }
-    }
-}
-
-void display(){
-    if(head == NULL){
-        printf("\n!!There are no nodes to display!!\n");
-    }
-    else{
-        current = head;
-        while(current!=NULL){
-            printf("%d ", current->data);
-            current = current->next;
-        }
-    }
+    printf("\nElement Inserted Successfully ");
 }
 
 void delete(){
-    if(head == NULL){
-        printf("\n!!There are no nodes to delete!!\n");
+    if(start == NULL){
+        printf("List is Empty ! \n");
+        return;
+    }
+    if(start->next == NULL){
+        free(start);
+        start = NULL;
+        printf("Deleted Successfully\n");
+        return;
     }
     else{
-        int pos;
-        current = head;
-        printf("\nEnter the position: ");
-        scanf("%d", &pos);
-        if(pos == 1){
-            head = head->next;
-            free(current);
+        temp = start;
+        while(temp->next != NULL){
+            prev = temp;
+            temp = temp->next;
         }
-        else{
-            for(int i=2; i<pos; i++){
-                if(current->next == NULL){
-                    break;
-                }
-                current = current->next;
-            }
-            if(current->next == NULL){
-                printf("\n!!There was no node to delete at the position!!\n");
-            }
-            else{
-                node *temp;                          /* temp used to free unused space */ 
-                temp = current->next;
-                current->next = current->next->next;
-                free(temp);
-            }
-            
-        }
+        free(temp);
+        prev->next=NULL;
+        printf("\n Deleted Successfully");
+        
+        
     }
+}
+void update(){
+    
+}
+
+void display(){
+    if(start == NULL){
+        printf("List is Empty ! \n");
+        return;
+    }
+    printf("Printing List -- \n ");
+    temp = start;
+    while(temp!=NULL){
+        printf(" %d ",temp->data);
+        if (temp->next != NULL) {
+            printf(" ->"); 
+        }
+        temp = temp->next;
+    }
+    printf("\b\b\b\b\b");
 }
